@@ -11,29 +11,41 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This package was initially created for internal use only, but can be used by anyone
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Wrapper class covering everything for [mqtt_client](https://pub.dev/packages/mqtt_client)
+- Provides listeners on events and other callbacks for mqtt_client
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add it to your `pubspec.yaml`
+
+```yaml
+mqtt_helper: 0.0.1
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+1. Create one instance of the helper class `MqttHelper`
 
 ```dart
-const like = 'sample';
+var helper = MqttHelper();
 ```
 
-## Additional information
+2. Initialize and Connect to the MqttClient with the helper
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+var config = MqttConfig(); // You'll need to pass your creds and configs inside MqttConfig
+helper.initialize(config);
+```
+
+## Additional Information
+
+1. Use `onConnectionChange()` listener to listen to connection changes whether Mqtt is connected or not
+1. Use `onEvent()` listener to listen to events that will come.
+1. Use `subscribeTopic()` to subscribe to single topic.
+1. Use `subscribeTopics()` to subscribe to multiple topics at once.
+1. Use `unsubscribeTopic()` to unsubscribe to single topic.
+1. Use `unsubscribeTopics()` to unsubscribe to multiple topics at once.

@@ -1,5 +1,5 @@
 name: mqtt_helper
-description: "A new Flutter package project."
+description: "Flutter package for mqtt client boilerplate code"
 version: 0.0.1
 repository: https://github.com/Jatin5120/mqtt_helper
 
