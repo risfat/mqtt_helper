@@ -1,10 +1,10 @@
 name: mqtt_helper
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
+repository: https://github.com/Jatin5120/mqtt_helper
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
