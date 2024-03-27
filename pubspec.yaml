@@ -1,6 +1,6 @@
 name: mqtt_helper
 description: "Flutter package for mqtt client boilerplate code"
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/Jatin5120/mqtt_helper
 
 environment:

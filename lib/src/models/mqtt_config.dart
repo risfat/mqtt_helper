@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'models.dart';
@@ -6,14 +5,20 @@ import 'models.dart';
 class MqttConfig {
   final ServerConfig serverConfig;
   final ProjectConfig projectConfig;
+  final WebSocketConfig? webSocketConfig;
   final String userId;
   final String? username;
   final String? password;
+  final bool enableLogging;
+  final bool secure;
 
   MqttConfig({
     required this.serverConfig,
     required this.projectConfig,
+    this.webSocketConfig,
     required this.userId,
+    this.enableLogging = true,
+    this.secure = false,
     String? username,
     String? password,
   })  : username = username ?? '2${projectConfig.accountId}${projectConfig.projectId}',
@@ -22,14 +27,20 @@ class MqttConfig {
   MqttConfig copyWith({
     ServerConfig? serverConfig,
     ProjectConfig? projectConfig,
+    WebSocketConfig? webSocketConfig,
     String? userId,
+    bool? enableLogging,
+    bool? secure,
     String? username,
     String? password,
   }) {
     return MqttConfig(
       serverConfig: serverConfig ?? this.serverConfig,
       projectConfig: projectConfig ?? this.projectConfig,
+      webSocketConfig: webSocketConfig ?? this.webSocketConfig,
       userId: userId ?? this.userId,
+      enableLogging: enableLogging ?? this.enableLogging,
+      secure: secure ?? this.secure,
       username: username ?? this.username,
       password: password ?? this.password,
     );
@@ -39,7 +50,10 @@ class MqttConfig {
     return <String, dynamic>{
       'serverConfig': serverConfig.toMap(),
       'projectConfig': projectConfig.toMap(),
+      'webSocketConfig': webSocketConfig?.toMap(),
       'userId': userId,
+      'enableLogging': enableLogging,
+      'secure': secure,
       'username': username,
       'password': password,
     };
@@ -49,7 +63,10 @@ class MqttConfig {
     return MqttConfig(
       serverConfig: ServerConfig.fromMap(map['serverConfig'] as Map<String, dynamic>),
       projectConfig: ProjectConfig.fromMap(map['projectConfig'] as Map<String, dynamic>),
+      webSocketConfig: map['webSocketConfig'] != null ? WebSocketConfig.fromMap(map['webSocketConfig'] as Map<String, dynamic>) : null,
       userId: map['userId'] as String,
+      enableLogging: map['enableLogging'] as bool,
+      secure: map['secure'] as bool,
       username: map['username'] as String?,
       password: map['password'] as String?,
     );
@@ -61,7 +78,7 @@ class MqttConfig {
 
   @override
   String toString() {
-    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, userId: $userId, username: $username, password: $password)';
+    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, userId: $userId, username: $username, password: $password, enableLogging: $enableLogging, secure: $secure)';
   }
 
   @override
@@ -70,13 +87,23 @@ class MqttConfig {
 
     return other.serverConfig == serverConfig &&
         other.projectConfig == projectConfig &&
+        other.webSocketConfig == webSocketConfig &&
         other.userId == userId &&
         other.username == username &&
-        other.password == password;
+        other.password == password &&
+        other.enableLogging == enableLogging &&
+        other.secure == secure;
   }
 
   @override
   int get hashCode {
-    return serverConfig.hashCode ^ projectConfig.hashCode ^ userId.hashCode ^ username.hashCode ^ password.hashCode;
+    return serverConfig.hashCode ^
+        projectConfig.hashCode ^
+        webSocketConfig.hashCode ^
+        userId.hashCode ^
+        username.hashCode ^
+        password.hashCode ^
+        enableLogging.hashCode ^
+        secure.hashCode;
   }
 }

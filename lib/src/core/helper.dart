@@ -70,15 +70,17 @@ class MqttHelper {
     );
 
     _client.port = _config.serverConfig.port;
-    _client.secure = false;
+    _client.secure = _config.secure;
     _client.keepAlivePeriod = 60;
     _client.onDisconnected = _onDisconnected;
     _client.onUnsubscribed = _onUnSubscribed;
     _client.onSubscribeFail = _onSubscribeFailed;
-    _client.logging(on: true);
+    _client.logging(on: _config.enableLogging);
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
+    _client.useWebSocket = _config.webSocketConfig?.useWebsocket ?? false;
     _client.setProtocolV311();
+    _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client.onConnected = _onConnected;
