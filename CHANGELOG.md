@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Added exception handling in connect client
+
 ## 0.0.2
 
 - Added websocket configuration

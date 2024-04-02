@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -90,15 +91,19 @@ class MqttHelper {
   }
 
   Future<void> _connectClient() async {
-    var res = await _client.connect(
-      _config.username,
-      _config.password,
-    );
-    if (res?.state == MqttConnectionState.connected) {
-      _connectionStream.add(true);
-      if (_autoSubscribe) {
-        subscribeTopics(_topics!);
+    try {
+      var res = await _client.connect(
+        _config.username,
+        _config.password,
+      );
+      if (res?.state == MqttConnectionState.connected) {
+        _connectionStream.add(true);
+        if (_autoSubscribe) {
+          subscribeTopics(_topics!);
+        }
       }
+    } catch (e, st) {
+      log('[MQTTHelper] - $e', stackTrace: st);
     }
   }
 
