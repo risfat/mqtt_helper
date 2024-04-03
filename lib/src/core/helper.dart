@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:mqtt_helper/mqtt_helper.dart';
 
 class MqttHelper {
@@ -13,7 +12,9 @@ class MqttHelper {
 
   MqttCallbacks? _callbacks;
 
-  late MqttServerClient _client;
+  late MqttClient _client;
+
+  late MqttHelperClient _helperClient;
 
   late String _userId;
 
@@ -23,14 +24,21 @@ class MqttHelper {
 
   bool _autoSubscribe = false;
 
-  final _eventStream = StreamController<Map<String, dynamic>>.broadcast();
+  late StreamController<MqttHelperPayload?> _rawEventStream;
 
-  final _connectionStream = StreamController<bool>.broadcast();
+  late StreamController<DynamicMap> _eventStream;
 
-  StreamSubscription<Map<String, dynamic>> onEvent(
-    Function(Map<String, dynamic>) event,
+  late StreamController<bool> _connectionStream;
+
+  StreamSubscription<DynamicMap> onEvent(
+    Function(DynamicMap) event,
   ) =>
       _eventStream.stream.listen(event);
+
+  StreamSubscription<MqttHelperPayload?> onRawEvent(
+    Function(MqttHelperPayload?) event,
+  ) =>
+      _rawEventStream.stream.listen(event);
 
   StreamSubscription<bool> onConnectionChange(
     Function(bool) change,
@@ -48,11 +56,17 @@ class MqttHelper {
         throw Exception('You must specify at least one topic when auto-subscribing');
       }
     }
+
+    _rawEventStream = StreamController<MqttHelperPayload>.broadcast();
+    _eventStream = StreamController<DynamicMap>.broadcast();
+    _connectionStream = StreamController<bool>.broadcast();
+
     _initialized = true;
     _config = config;
     _callbacks = callbacks;
     _topics = topics;
     _autoSubscribe = autoSubscribe;
+
     await _initializeClient();
     await _connectClient();
   }
@@ -61,17 +75,16 @@ class MqttHelper {
     if (!_initialized) {
       throw Exception('MqttConfig is not initialized. Initialize it by calling initialize(config)');
     }
+
+    _helperClient = MqttHelperClient();
+
     _userId = _config.userId;
     _deviceId = _config.projectConfig.deviceId;
     var identifier = '$_userId$_deviceId';
 
-    _client = MqttServerClient(
-      _config.serverConfig.hostName,
-      identifier,
-    );
+    _client = _helperClient.setup(_config);
 
     _client.port = _config.serverConfig.port;
-    _client.secure = _config.secure;
     _client.keepAlivePeriod = 60;
     _client.onDisconnected = _onDisconnected;
     _client.onUnsubscribed = _onUnSubscribed;
@@ -79,7 +92,6 @@ class MqttHelper {
     _client.logging(on: _config.enableLogging);
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
-    _client.useWebSocket = _config.webSocketConfig?.useWebsocket ?? false;
     _client.setProtocolV311();
     _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
 
@@ -164,6 +176,7 @@ class MqttHelper {
     _callbacks?.onConnected?.call();
 
     _client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
+      _rawEventStream.add(c);
       final recMess = c!.first.payload as MqttPublishMessage;
 
       var payload = jsonDecode(
