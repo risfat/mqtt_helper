@@ -1,3 +1,7 @@
+## 0.0.5
+
+- Added disconnect callback
+
 ## 0.0.4
 
 - Added BrowserClient support for Web
