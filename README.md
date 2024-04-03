@@ -23,7 +23,7 @@ This package was initially created for internal use only, but can be used by any
 Add it to your `pubspec.yaml`
 
 ```yaml
-mqtt_helper: 0.0.1
+mqtt_helper: <latest-version>
 ```
 
 ## Usage
