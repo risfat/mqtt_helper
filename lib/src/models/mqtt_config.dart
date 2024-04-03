@@ -21,8 +21,10 @@ class MqttConfig {
     this.secure = false,
     String? username,
     String? password,
-  })  : username = username ?? '2${projectConfig.accountId}${projectConfig.projectId}',
-        password = password ?? '${projectConfig.licenseKey}${projectConfig.keySetId}';
+  })  : username =
+            username ?? '2${projectConfig.accountId}${projectConfig.projectId}',
+        password =
+            password ?? '${projectConfig.licenseKey}${projectConfig.keySetId}';
 
   MqttConfig copyWith({
     ServerConfig? serverConfig,
@@ -61,9 +63,17 @@ class MqttConfig {
 
   factory MqttConfig.fromMap(Map<String, dynamic> map) {
     return MqttConfig(
-      serverConfig: ServerConfig.fromMap(map['serverConfig'] as Map<String, dynamic>),
-      projectConfig: ProjectConfig.fromMap(map['projectConfig'] as Map<String, dynamic>),
-      webSocketConfig: map['webSocketConfig'] != null ? WebSocketConfig.fromMap(map['webSocketConfig'] as Map<String, dynamic>) : null,
+      serverConfig: ServerConfig.fromMap(
+        map['serverConfig'] as Map<String, dynamic>,
+      ),
+      projectConfig: ProjectConfig.fromMap(
+        map['projectConfig'] as Map<String, dynamic>,
+      ),
+      webSocketConfig: map['webSocketConfig'] != null
+          ? WebSocketConfig.fromMap(
+              map['webSocketConfig'] as Map<String, dynamic>,
+            )
+          : null,
       userId: map['userId'] as String,
       enableLogging: map['enableLogging'] as bool,
       secure: map['secure'] as bool,
@@ -74,7 +84,9 @@ class MqttConfig {
 
   String toJson() => json.encode(toMap());
 
-  factory MqttConfig.fromJson(String source) => MqttConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory MqttConfig.fromJson(String source) => MqttConfig.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   @override
   String toString() {

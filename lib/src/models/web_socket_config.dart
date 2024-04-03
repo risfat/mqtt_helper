@@ -38,16 +38,23 @@ class WebSocketConfig {
 
   String toJson() => json.encode(toMap());
 
-  factory WebSocketConfig.fromJson(String source) => WebSocketConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory WebSocketConfig.fromJson(String source) => WebSocketConfig.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   @override
-  String toString() => 'WebSocketConfig(useWebsocket: $useWebsocket, websocketProtocols: $websocketProtocols)';
+  String toString() =>
+      'WebSocketConfig(useWebsocket: $useWebsocket, websocketProtocols: $websocketProtocols)';
 
   @override
   bool operator ==(covariant WebSocketConfig other) {
     if (identical(this, other)) return true;
 
-    return other.useWebsocket == useWebsocket && listEquals(other.websocketProtocols, websocketProtocols);
+    return other.useWebsocket == useWebsocket &&
+        listEquals(
+          other.websocketProtocols,
+          websocketProtocols,
+        );
   }
 
   @override

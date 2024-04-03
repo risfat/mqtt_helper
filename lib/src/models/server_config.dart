@@ -35,7 +35,9 @@ class ServerConfig {
 
   String toJson() => json.encode(toMap());
 
-  factory ServerConfig.fromJson(String source) => ServerConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ServerConfig.fromJson(String source) => ServerConfig.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   @override
   String toString() => 'ServerConfig(hostName: $hostName, port: $port)';
