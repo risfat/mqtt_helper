@@ -1,3 +1,8 @@
+## 0.0.4
+
+- Added BrowserClient support for Web
+- Added Documentation
+
 ## 0.0.3
 
 - Added exception handling in connect client

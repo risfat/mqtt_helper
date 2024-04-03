@@ -65,7 +65,9 @@ class ProjectConfig {
 
   String toJson() => json.encode(toMap());
 
-  factory ProjectConfig.fromJson(String source) => ProjectConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ProjectConfig.fromJson(String source) => ProjectConfig.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 
   @override
   String toString() {

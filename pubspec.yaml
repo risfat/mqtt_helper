@@ -1,6 +1,6 @@
 name: mqtt_helper
-description: "Flutter package for mqtt client boilerplate code"
-version: 0.0.3
+description: "mqtt_helper is a Flutter package that simplifies MQTT integration, reducing boilerplate code and providing a convenient layer on top of mqtt_client."
+version: 0.0.4
 repository: https://github.com/Jatin5120/mqtt_helper
 
 environment:

@@ -53,7 +53,9 @@ class MqttHelper {
   }) async {
     if (autoSubscribe) {
       if (topics == null || topics.isEmpty) {
-        throw Exception('You must specify at least one topic when auto-subscribing');
+        throw Exception(
+          'You must specify at least one topic when auto-subscribing',
+        );
       }
     }
 
@@ -73,7 +75,9 @@ class MqttHelper {
 
   Future<void> _initializeClient() async {
     if (!_initialized) {
-      throw Exception('MqttConfig is not initialized. Initialize it by calling initialize(config)');
+      throw Exception(
+        'MqttConfig is not initialized. Initialize it by calling initialize(config)',
+      );
     }
 
     _helperClient = MqttHelperClient();
@@ -93,13 +97,15 @@ class MqttHelper {
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
     _client.setProtocolV311();
-    _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
+    _client.websocketProtocols =
+        _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client.onConnected = _onConnected;
     _client.onSubscribed = _onSubscribed;
 
-    _client.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client.connectionMessage =
+        MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
@@ -121,17 +127,22 @@ class MqttHelper {
 
   void subscribeTopic(String topic) {
     if (!_initialized) {
-      throw Exception('MqttConfig is not initialized. Initialize it by calling initialize(config)');
+      throw Exception(
+        'MqttConfig is not initialized. Initialize it by calling initialize(config)',
+      );
     }
 
-    if (_client.getSubscriptionsStatus(topic) == MqttSubscriptionStatus.doesNotExist) {
+    if (_client.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.doesNotExist) {
       _client.subscribe(topic, MqttQos.atMostOnce);
     }
   }
 
   void subscribeTopics(List<String> topics) {
     if (!_initialized) {
-      throw Exception('MqttConfig is not initialized. Initialize it by calling initialize(config)');
+      throw Exception(
+        'MqttConfig is not initialized. Initialize it by calling initialize(config)',
+      );
     }
 
     for (var topic in topics) {
@@ -140,7 +151,8 @@ class MqttHelper {
   }
 
   void unsubscribeTopic(String topic) {
-    if (_client.getSubscriptionsStatus(topic) == MqttSubscriptionStatus.active) {
+    if (_client.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.active) {
       _client.unsubscribe(topic);
     }
   }
