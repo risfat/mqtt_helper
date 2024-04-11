@@ -1,3 +1,7 @@
+## 0.0.7
+
+- Fix Data stream not initialized
+
 ## 0.0.6
 
 - Added Event stream for topic and data
