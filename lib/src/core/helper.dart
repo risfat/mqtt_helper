@@ -26,12 +26,19 @@ class MqttHelper {
 
   late StreamController<MqttHelperPayload?> _rawEventStream;
 
-  late StreamController<DynamicMap> _eventStream;
+  late StreamController<EventModel> _eventStream;
+
+  late StreamController<DynamicMap> _dataStream;
 
   late StreamController<bool> _connectionStream;
 
-  StreamSubscription<DynamicMap> onEvent(
+  StreamSubscription<DynamicMap> onData(
     Function(DynamicMap) event,
+  ) =>
+      _dataStream.stream.listen(event);
+
+  StreamSubscription<EventModel> onEvent(
+    Function(EventModel) event,
   ) =>
       _eventStream.stream.listen(event);
 
@@ -60,7 +67,7 @@ class MqttHelper {
     }
 
     _rawEventStream = StreamController<MqttHelperPayload>.broadcast();
-    _eventStream = StreamController<DynamicMap>.broadcast();
+    _eventStream = StreamController<EventModel>.broadcast();
     _connectionStream = StreamController<bool>.broadcast();
 
     _initialized = true;
@@ -191,12 +198,19 @@ class MqttHelper {
     _client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
       _rawEventStream.add(c);
       final recMess = c!.first.payload as MqttPublishMessage;
+      final topic = c.first.topic;
 
       var payload = jsonDecode(
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message),
       ) as Map<String, dynamic>;
 
-      _eventStream.add(payload);
+      _dataStream.add(payload);
+      _eventStream.add(
+        EventModel(
+          topic: topic,
+          payload: payload,
+        ),
+      );
     });
   }
 }
