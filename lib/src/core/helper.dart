@@ -67,6 +67,7 @@ class MqttHelper {
     }
 
     _rawEventStream = StreamController<MqttHelperPayload>.broadcast();
+    _dataStream = StreamController<DynamicMap>.broadcast();
     _eventStream = StreamController<EventModel>.broadcast();
     _connectionStream = StreamController<bool>.broadcast();
 
@@ -104,13 +105,15 @@ class MqttHelper {
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
     _client.setProtocolV311();
-    _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
+    _client.websocketProtocols =
+        _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client.onConnected = _onConnected;
     _client.onSubscribed = _onSubscribed;
 
-    _client.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client.connectionMessage =
+        MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
@@ -137,7 +140,8 @@ class MqttHelper {
       );
     }
 
-    if (_client.getSubscriptionsStatus(topic) == MqttSubscriptionStatus.doesNotExist) {
+    if (_client.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.doesNotExist) {
       _client.subscribe(topic, MqttQos.atMostOnce);
     }
   }
@@ -155,7 +159,8 @@ class MqttHelper {
   }
 
   void unsubscribeTopic(String topic) {
-    if (_client.getSubscriptionsStatus(topic) == MqttSubscriptionStatus.active) {
+    if (_client.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.active) {
       _client.unsubscribe(topic);
     }
   }
@@ -204,13 +209,13 @@ class MqttHelper {
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message),
       ) as Map<String, dynamic>;
 
-      _dataStream.add(payload);
       _eventStream.add(
         EventModel(
           topic: topic,
           payload: payload,
         ),
       );
+      _dataStream.add(payload);
     });
   }
 }
