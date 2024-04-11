@@ -1,3 +1,7 @@
+## 0.0.6
+
+- Added Event stream for topic and data
+
 ## 0.0.5
 
 - Added disconnect callback
