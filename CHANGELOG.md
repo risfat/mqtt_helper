@@ -1,3 +1,7 @@
+## 0.0.8
+
+- Made Subscribe and Unsubscribe topics conditionless
+
 ## 0.0.7
 
 - Fix Data stream not initialized

@@ -105,13 +105,15 @@ class MqttHelper {
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
     _client.setProtocolV311();
-    _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
+    _client.websocketProtocols =
+        _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client.onConnected = _onConnected;
     _client.onSubscribed = _onSubscribed;
 
-    _client.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client.connectionMessage =
+        MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
