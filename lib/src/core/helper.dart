@@ -105,15 +105,13 @@ class MqttHelper {
     _client.autoReconnect = true;
     _client.pongCallback = _pong;
     _client.setProtocolV311();
-    _client.websocketProtocols =
-        _config.webSocketConfig?.websocketProtocols ?? [];
+    _client.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client.onConnected = _onConnected;
     _client.onSubscribed = _onSubscribed;
 
-    _client.connectionMessage =
-        MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
@@ -140,10 +138,7 @@ class MqttHelper {
       );
     }
 
-    if (_client.getSubscriptionsStatus(topic) ==
-        MqttSubscriptionStatus.doesNotExist) {
-      _client.subscribe(topic, MqttQos.atMostOnce);
-    }
+    _client.subscribe(topic, MqttQos.atMostOnce);
   }
 
   void subscribeTopics(List<String> topics) {
@@ -159,10 +154,7 @@ class MqttHelper {
   }
 
   void unsubscribeTopic(String topic) {
-    if (_client.getSubscriptionsStatus(topic) ==
-        MqttSubscriptionStatus.active) {
-      _client.unsubscribe(topic);
-    }
+    _client.unsubscribe(topic);
   }
 
   void unsubscribeTopics(List<String> topics) {
