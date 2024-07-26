@@ -1,3 +1,8 @@
+## 0.0.9
+
+- Upgrade SDK & dependencies to latest version
+- Make variables nullable instead of late
+
 ## 0.0.8
 
 - Made Subscribe and Unsubscribe topics conditionless
