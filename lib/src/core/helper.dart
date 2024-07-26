@@ -12,13 +12,13 @@ class MqttHelper {
 
   MqttCallbacks? _callbacks;
 
-  late MqttClient _client;
+  MqttClient? _client;
 
-  late MqttHelperClient _helperClient;
+  MqttHelperClient? _helperClient;
 
-  late String _userId;
+  String? _userId;
 
-  late String _deviceId;
+  String? _deviceId;
 
   List<String>? _topics;
 
@@ -28,14 +28,7 @@ class MqttHelper {
 
   late StreamController<EventModel> _eventStream;
 
-  late StreamController<DynamicMap> _dataStream;
-
   late StreamController<bool> _connectionStream;
-
-  StreamSubscription<DynamicMap> onData(
-    Function(DynamicMap) event,
-  ) =>
-      _dataStream.stream.listen(event);
 
   StreamSubscription<EventModel> onEvent(
     Function(EventModel) event,
@@ -67,7 +60,6 @@ class MqttHelper {
     }
 
     _rawEventStream = StreamController<MqttHelperPayload>.broadcast();
-    _dataStream = StreamController<DynamicMap>.broadcast();
     _eventStream = StreamController<EventModel>.broadcast();
     _connectionStream = StreamController<bool>.broadcast();
 
@@ -94,31 +86,29 @@ class MqttHelper {
     _deviceId = _config.projectConfig.deviceId;
     var identifier = '$_userId$_deviceId';
 
-    _client = _helperClient.setup(_config);
+    _client = _helperClient!.setup(_config);
 
-    _client.port = _config.serverConfig.port;
-    _client.keepAlivePeriod = 60;
-    _client.onDisconnected = _onDisconnected;
-    _client.onUnsubscribed = _onUnSubscribed;
-    _client.onSubscribeFail = _onSubscribeFailed;
-    _client.logging(on: _config.enableLogging);
-    _client.autoReconnect = true;
-    _client.pongCallback = _pong;
-    _client.setProtocolV311();
-    _client.websocketProtocols =
-        _config.webSocketConfig?.websocketProtocols ?? [];
+    _client?.port = _config.serverConfig.port;
+    _client?.keepAlivePeriod = 60;
+    _client?.onDisconnected = _onDisconnected;
+    _client?.onUnsubscribed = _onUnSubscribed;
+    _client?.onSubscribeFail = _onSubscribeFailed;
+    _client?.logging(on: _config.enableLogging);
+    _client?.autoReconnect = true;
+    _client?.pongCallback = _pong;
+    _client?.setProtocolV311();
+    _client?.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
-    _client.onConnected = _onConnected;
-    _client.onSubscribed = _onSubscribed;
+    _client?.onConnected = _onConnected;
+    _client?.onSubscribed = _onSubscribed;
 
-    _client.connectionMessage =
-        MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client?.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
     try {
-      var res = await _client.connect(
+      var res = await _client?.connect(
         _config.username,
         _config.password,
       );
@@ -140,7 +130,7 @@ class MqttHelper {
       );
     }
 
-    _client.subscribe(topic, MqttQos.atMostOnce);
+    _client?.subscribe(topic, MqttQos.atMostOnce);
   }
 
   void subscribeTopics(List<String> topics) {
@@ -156,7 +146,7 @@ class MqttHelper {
   }
 
   void unsubscribeTopic(String topic) {
-    _client.unsubscribe(topic);
+    _client?.unsubscribe(topic);
   }
 
   void unsubscribeTopics(List<String> topics) {
@@ -166,8 +156,8 @@ class MqttHelper {
   }
 
   void disconnect() {
-    _client.autoReconnect = false;
-    _client.disconnect();
+    _client?.autoReconnect = false;
+    _client?.disconnect();
   }
 
   void _pong() {
@@ -194,7 +184,7 @@ class MqttHelper {
   void _onConnected() {
     _callbacks?.onConnected?.call();
 
-    _client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
+    _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
       _rawEventStream.add(c);
       final recMess = c!.first.payload as MqttPublishMessage;
       final topic = c.first.topic;
@@ -209,7 +199,6 @@ class MqttHelper {
           payload: payload,
         ),
       );
-      _dataStream.add(payload);
     });
   }
 }
