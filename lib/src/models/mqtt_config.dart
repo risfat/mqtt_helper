@@ -6,9 +6,7 @@ class MqttConfig {
   final ServerConfig serverConfig;
   final ProjectConfig projectConfig;
   final WebSocketConfig? webSocketConfig;
-  final String userId;
-  final String? username;
-  final String? password;
+
   final bool enableLogging;
   final bool secure;
 
@@ -16,35 +14,23 @@ class MqttConfig {
     required this.serverConfig,
     required this.projectConfig,
     this.webSocketConfig,
-    required this.userId,
     this.enableLogging = true,
     this.secure = false,
-    String? username,
-    String? password,
-  })  : username =
-            username ?? '2${projectConfig.accountId}${projectConfig.projectId}',
-        password =
-            password ?? '${projectConfig.licenseKey}${projectConfig.keySetId}';
+  });
 
   MqttConfig copyWith({
     ServerConfig? serverConfig,
     ProjectConfig? projectConfig,
     WebSocketConfig? webSocketConfig,
-    String? userId,
     bool? enableLogging,
     bool? secure,
-    String? username,
-    String? password,
   }) {
     return MqttConfig(
       serverConfig: serverConfig ?? this.serverConfig,
       projectConfig: projectConfig ?? this.projectConfig,
       webSocketConfig: webSocketConfig ?? this.webSocketConfig,
-      userId: userId ?? this.userId,
       enableLogging: enableLogging ?? this.enableLogging,
       secure: secure ?? this.secure,
-      username: username ?? this.username,
-      password: password ?? this.password,
     );
   }
 
@@ -53,11 +39,8 @@ class MqttConfig {
       'serverConfig': serverConfig.toMap(),
       'projectConfig': projectConfig.toMap(),
       'webSocketConfig': webSocketConfig?.toMap(),
-      'userId': userId,
       'enableLogging': enableLogging,
       'secure': secure,
-      'username': username,
-      'password': password,
     };
   }
 
@@ -74,11 +57,8 @@ class MqttConfig {
               map['webSocketConfig'] as Map<String, dynamic>,
             )
           : null,
-      userId: map['userId'] as String,
       enableLogging: map['enableLogging'] as bool,
       secure: map['secure'] as bool,
-      username: map['username'] as String?,
-      password: map['password'] as String?,
     );
   }
 
@@ -90,7 +70,7 @@ class MqttConfig {
 
   @override
   String toString() {
-    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, userId: $userId, username: $username, password: $password, enableLogging: $enableLogging, secure: $secure)';
+    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure)';
   }
 
   @override
@@ -100,9 +80,6 @@ class MqttConfig {
     return other.serverConfig == serverConfig &&
         other.projectConfig == projectConfig &&
         other.webSocketConfig == webSocketConfig &&
-        other.userId == userId &&
-        other.username == username &&
-        other.password == password &&
         other.enableLogging == enableLogging &&
         other.secure == secure;
   }
@@ -112,9 +89,6 @@ class MqttConfig {
     return serverConfig.hashCode ^
         projectConfig.hashCode ^
         webSocketConfig.hashCode ^
-        userId.hashCode ^
-        username.hashCode ^
-        password.hashCode ^
         enableLogging.hashCode ^
         secure.hashCode;
   }

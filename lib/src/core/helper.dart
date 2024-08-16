@@ -16,11 +16,11 @@ class MqttHelper {
 
   MqttHelperClient? _helperClient;
 
-  String? _userId;
-
-  String? _deviceId;
-
   List<String>? _topics;
+
+  void Function(List<String>)? _subscribedTopicsCallback;
+
+  List<String> subscribedTopics = [];
 
   bool _autoSubscribe = false;
 
@@ -50,6 +50,7 @@ class MqttHelper {
     MqttCallbacks? callbacks,
     bool autoSubscribe = false,
     List<String>? topics,
+    void Function(List<String>)? subscribedTopicsCallback,
   }) async {
     if (autoSubscribe) {
       if (topics == null || topics.isEmpty) {
@@ -68,7 +69,7 @@ class MqttHelper {
     _callbacks = callbacks;
     _topics = topics;
     _autoSubscribe = autoSubscribe;
-
+    _subscribedTopicsCallback = subscribedTopicsCallback;
     await _initializeClient();
     await _connectClient();
   }
@@ -81,12 +82,11 @@ class MqttHelper {
     }
 
     _helperClient = MqttHelperClient();
+    var userIdentifier = _config.projectConfig.userIdentifier;
+    var deviceId = _config.projectConfig.deviceId;
+    var identifier = '$userIdentifier$deviceId';
 
-    _userId = _config.userId;
-    _deviceId = _config.projectConfig.deviceId;
-    var identifier = '$_userId$_deviceId';
-
-    _client = _helperClient!.setup(_config);
+    _client = _helperClient?.setup(_config);
 
     _client?.port = _config.serverConfig.port;
     _client?.keepAlivePeriod = 60;
@@ -97,20 +97,26 @@ class MqttHelper {
     _client?.autoReconnect = true;
     _client?.pongCallback = _pong;
     _client?.setProtocolV311();
-    _client?.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
+    _client?.websocketProtocols =
+        _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client?.onConnected = _onConnected;
     _client?.onSubscribed = _onSubscribed;
 
-    _client?.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client?.connectionMessage =
+        MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   Future<void> _connectClient() async {
     try {
       var res = await _client?.connect(
-        _config.username,
-        _config.password,
+        _config.projectConfig.username.isNotEmpty
+            ? _config.projectConfig.username
+            : null,
+        _config.projectConfig.password.isNotEmpty
+            ? _config.projectConfig.password
+            : null,
       );
       if (res?.state == MqttConnectionState.connected) {
         _connectionStream.add(true);
@@ -130,7 +136,11 @@ class MqttHelper {
       );
     }
 
-    _client?.subscribe(topic, MqttQos.atMostOnce);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.doesNotExist) {
+      _client?.subscribe(topic, MqttQos.atMostOnce);
+      subscribedTopics.add(topic);
+    }
   }
 
   void subscribeTopics(List<String> topics) {
@@ -139,14 +149,17 @@ class MqttHelper {
         'MqttConfig is not initialized. Initialize it by calling initialize(config)',
       );
     }
-
     for (var topic in topics) {
       subscribeTopic(topic);
     }
+    _subscribedTopicsCallback?.call(subscribedTopics);
   }
 
   void unsubscribeTopic(String topic) {
-    _client?.unsubscribe(topic);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.active) {
+      _client?.unsubscribe(topic);
+    }
   }
 
   void unsubscribeTopics(List<String> topics) {
@@ -183,8 +196,8 @@ class MqttHelper {
 
   void _onConnected() {
     _callbacks?.onConnected?.call();
-
-    _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
+    _client?.updates
+        ?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
       _rawEventStream.add(c);
       final recMess = c!.first.payload as MqttPublishMessage;
       final topic = c.first.topic;
@@ -200,5 +213,20 @@ class MqttHelper {
         ),
       );
     });
+  }
+
+  int? publishMessage({required String message, bool retain = false}) {
+    const pubTopic = 'test/sample';
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
+      return _client?.publishMessage(
+        pubTopic,
+        MqttQos.atMostOnce,
+        builder.payload!,
+        retain: retain,
+      );
+    }
+    return null;
   }
 }
