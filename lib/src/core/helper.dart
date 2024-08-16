@@ -215,8 +215,11 @@ class MqttHelper {
     });
   }
 
-  int? publishMessage({required String message, bool retain = false}) {
-    const pubTopic = 'test/sample';
+  int? publishMessage({
+    required String message,
+    required String pubTopic,
+    bool retain = false,
+  }) {
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
     if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
