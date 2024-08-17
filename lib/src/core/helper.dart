@@ -16,7 +16,7 @@ class MqttHelper {
 
   MqttHelperClient? _helperClient;
 
-  List<String>? _topics;
+  late List<String> _topics;
 
   void Function(List<String>)? _subscribedTopicsCallback;
 
@@ -67,7 +67,7 @@ class MqttHelper {
     _initialized = true;
     _config = config;
     _callbacks = callbacks;
-    _topics = topics;
+    _topics = topics ?? [];
     _autoSubscribe = autoSubscribe;
     _subscribedTopicsCallback = subscribedTopicsCallback;
     await _initializeClient();
@@ -121,7 +121,8 @@ class MqttHelper {
       if (res?.state == MqttConnectionState.connected) {
         _connectionStream.add(true);
         if (_autoSubscribe) {
-          subscribeTopics(_topics!);
+          subscribedTopics.clear();
+          subscribeTopics(_topics);
         }
       }
     } catch (e, st) {
@@ -136,11 +137,8 @@ class MqttHelper {
       );
     }
 
-    if (_client?.getSubscriptionsStatus(topic) ==
-        MqttSubscriptionStatus.doesNotExist) {
-      _client?.subscribe(topic, MqttQos.atMostOnce);
-      subscribedTopics.add(topic);
-    }
+    _client?.subscribe(topic, MqttQos.atMostOnce);
+    subscribedTopics.add(topic);
   }
 
   void subscribeTopics(List<String> topics) {
@@ -156,10 +154,7 @@ class MqttHelper {
   }
 
   void unsubscribeTopic(String topic) {
-    if (_client?.getSubscriptionsStatus(topic) ==
-        MqttSubscriptionStatus.active) {
-      _client?.unsubscribe(topic);
-    }
+    _client?.unsubscribe(topic);
   }
 
   void unsubscribeTopics(List<String> topics) {
