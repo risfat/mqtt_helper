@@ -7,9 +7,9 @@ class MqttHelperClient {
   MqttBrowserClient get client => _client;
 
   MqttBrowserClient setup(MqttConfig config) {
-    var userId = config.userId;
+    var userIdentifier = config.projectConfig.userIdentifier;
     var deviceId = config.projectConfig.deviceId;
-    var identifier = '$userId$deviceId';
+    var identifier = '$userIdentifier$deviceId';
 
     _client = MqttBrowserClient(
       config.serverConfig.hostName,
