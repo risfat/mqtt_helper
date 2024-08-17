@@ -199,8 +199,8 @@ class MqttHelper {
     _client?.updates
         ?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
       _rawEventStream.add(c);
-      final recMess = c!.first.payload as MqttPublishMessage;
-      final topic = c.first.topic;
+      final recMess = c?.first.payload as MqttPublishMessage;
+      final topic = c?.first.topic;
 
       var payload = jsonDecode(
         MqttPublishPayload.bytesToStringAsString(recMess.payload.message),
@@ -208,7 +208,7 @@ class MqttHelper {
 
       _eventStream.add(
         EventModel(
-          topic: topic,
+          topic: topic ?? '',
           payload: payload,
         ),
       );
