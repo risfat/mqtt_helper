@@ -1,3 +1,7 @@
+## 1.0.0
+
+- Added example folder
+
 ## 0.1.0
 
 - Make changes in the configuration class for userIdentifier, username and password
