@@ -158,13 +158,15 @@ class MqttHelper {
     _client?.autoReconnect = true;
     _client?.pongCallback = _pong;
     _client?.setProtocolV311();
-    _client?.websocketProtocols = _config.webSocketConfig?.websocketProtocols ?? [];
+    _client?.websocketProtocols =
+        _config.webSocketConfig?.websocketProtocols ?? [];
 
     /// Add the successful connection callback
     _client?.onConnected = _onConnected;
     _client?.onSubscribed = _onSubscribed;
 
-    _client?.connectionMessage = MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client?.connectionMessage =
+        MqttConnectMessage().withClientIdentifier(identifier).startClean();
   }
 
   /// Connects the underlying MQTT client to the MQTT broker.
@@ -173,8 +175,12 @@ class MqttHelper {
   Future<void> _connectClient() async {
     try {
       var res = await _client?.connect(
-        _config.projectConfig.username.isNotEmpty ? _config.projectConfig.username : null,
-        _config.projectConfig.password.isNotEmpty ? _config.projectConfig.password : null,
+        _config.projectConfig.username.isNotEmpty
+            ? _config.projectConfig.username
+            : null,
+        _config.projectConfig.password.isNotEmpty
+            ? _config.projectConfig.password
+            : null,
       );
       if (res?.state == MqttConnectionState.connected) {
         _connectionStream.add(true);
@@ -294,7 +300,8 @@ class MqttHelper {
   /// This function is called when the MQTT client connects to the MQTT broker.
   void _onConnected() {
     _callbacks?.onConnected?.call();
-    _client?.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
+    _client?.updates
+        ?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) async {
       _rawEventStream.add(c);
       final recMess = c?.first.payload as MqttPublishMessage;
       final topic = c?.first.topic;

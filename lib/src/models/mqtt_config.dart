@@ -104,6 +104,10 @@ class MqttConfig {
   /// Returns the hash code of the `MqttConfig` instance.
   @override
   int get hashCode {
-    return serverConfig.hashCode ^ projectConfig.hashCode ^ webSocketConfig.hashCode ^ enableLogging.hashCode ^ secure.hashCode;
+    return serverConfig.hashCode ^
+        projectConfig.hashCode ^
+        webSocketConfig.hashCode ^
+        enableLogging.hashCode ^
+        secure.hashCode;
   }
 }

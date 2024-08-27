@@ -46,3 +46,7 @@ helper.initialize(config);
 - Use `subscribeTopics()` to subscribe to multiple topics at once.
 - Use `unsubscribeTopic()` to unsubscribe to single topic.
 - Use `unsubscribeTopics()` to unsubscribe to multiple topics at once.
+
+### Publishing
+
+- Use `publishMessage()` to publish a message to a topic.
