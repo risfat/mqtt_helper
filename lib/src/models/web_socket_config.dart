@@ -70,7 +70,8 @@ class WebSocketConfig {
   /// This method returns a string that represents the `WebSocketConfig` instance,
   /// which can be used for debugging or logging purposes.
   @override
-  String toString() => 'WebSocketConfig(useWebsocket: $useWebsocket, websocketProtocols: $websocketProtocols)';
+  String toString() =>
+      'WebSocketConfig(useWebsocket: $useWebsocket, websocketProtocols: $websocketProtocols)';
 
   /// Compares two `WebSocketConfig` instances for equality.
   /// This method checks if two instances of `WebSocketConfig` are equal,

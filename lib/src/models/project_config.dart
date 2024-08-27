@@ -61,7 +61,8 @@ class ProjectConfig {
   String toJson() => json.encode(toMap());
 
   /// Creates a `ProjectConfig` instance from a JSON string.
-  factory ProjectConfig.fromJson(String source) => ProjectConfig.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ProjectConfig.fromJson(String source) =>
+      ProjectConfig.fromMap(json.decode(source) as Map<String, dynamic>);
 
   /// Returns a string representation of the `ProjectConfig` instance.
   @override
@@ -74,12 +75,18 @@ class ProjectConfig {
   bool operator ==(covariant ProjectConfig other) {
     if (identical(this, other)) return true;
 
-    return other.deviceId == deviceId && other.userIdentifier == userIdentifier && other.username == username && other.password == password;
+    return other.deviceId == deviceId &&
+        other.userIdentifier == userIdentifier &&
+        other.username == username &&
+        other.password == password;
   }
 
   /// Returns the hash code of the `ProjectConfig` instance.
   @override
   int get hashCode {
-    return deviceId.hashCode ^ userIdentifier.hashCode ^ username.hashCode ^ password.hashCode;
+    return deviceId.hashCode ^
+        userIdentifier.hashCode ^
+        username.hashCode ^
+        password.hashCode;
   }
 }
