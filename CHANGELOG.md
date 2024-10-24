@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Disconnect client on connection error from broker
+
 ## 1.0.0
 
 - Added example folder
