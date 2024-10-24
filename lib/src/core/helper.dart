@@ -189,7 +189,11 @@ class MqttHelper {
           subscribeTopics(_topics);
         }
       }
+    } on NoConnectionException catch (e, st) {
+      disconnect();
+      log('[MQTTHelper] - $e', stackTrace: st);
     } catch (e, st) {
+      disconnect();
       log('[MQTTHelper] - $e', stackTrace: st);
     }
   }
