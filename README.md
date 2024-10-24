@@ -1,29 +1,21 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-This package was initially created for internal use only, but can be used by anyone
+A wrapper package for mqtt_client that provides a simpler and more intuitive API for working with MQTT in Flutter.
 
 ## Features
 
 - Wrapper class covering everything for [mqtt_client](https://pub.dev/packages/mqtt_client)
-- Provides listeners on events and other callbacks for mqtt_client
+- Provides listeners on events and other callbacks for `mqtt_client`
+- Simplifies the usage of `mqtt_client` with a wrapper class
+  - Provides listeners for connection changes and events
+  - Supports subscribing and unsubscribing to single or multiple topics
+  - Allows publishing messages to MQTT topics
 
 ## Getting started
 
 Add it to your `pubspec.yaml`
 
 ```yaml
-mqtt_helper: <latest-version>
+dependencies:
+  mqtt_helper: <latest-version>
 ```
 
 ## Usage
@@ -43,9 +35,18 @@ helper.initialize(config);
 
 ## Additional Information
 
-1. Use `onConnectionChange()` listener to listen to connection changes whether Mqtt is connected or not
-1. Use `onEvent()` listener to listen to events that will come.
-1. Use `subscribeTopic()` to subscribe to single topic.
-1. Use `subscribeTopics()` to subscribe to multiple topics at once.
-1. Use `unsubscribeTopic()` to unsubscribe to single topic.
-1. Use `unsubscribeTopics()` to unsubscribe to multiple topics at once.
+### Listeners
+
+- Use `onConnectionChange()` listener to listen to connection changes whether Mqtt is connected or not
+- Use `onEvent()` listener to listen to events that will come.
+
+### Subscribing and Unsubscribing
+
+- Use `subscribeTopic()` to subscribe to single topic.
+- Use `subscribeTopics()` to subscribe to multiple topics at once.
+- Use `unsubscribeTopic()` to unsubscribe to single topic.
+- Use `unsubscribeTopics()` to unsubscribe to multiple topics at once.
+
+### Publishing
+
+- Use `publishMessage()` to publish a message to a topic.

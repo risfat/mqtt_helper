@@ -1,3 +1,12 @@
+## 1.0.0
+
+- Added example folder
+
+## 0.1.0
+
+- Make changes in the configuration class for userIdentifier, username and password
+- Add support to publish messages
+
 ## 0.0.9
 
 - Upgrade SDK & dependencies to latest version

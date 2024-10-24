@@ -1,100 +1,92 @@
 import 'dart:convert';
 
+/// Represents a project configuration.
 class ProjectConfig {
-  const ProjectConfig({
-    required this.accountId,
-    required this.appSecret,
-    required this.userSecret,
-    required this.keySetId,
-    required this.licenseKey,
-    required this.projectId,
-    required this.deviceId,
-  });
-
-  final String accountId;
-  final String appSecret;
-  final String userSecret;
-  final String keySetId;
-  final String licenseKey;
-  final String projectId;
+  /// The device ID.
   final String deviceId;
 
+  /// The user identifier.
+  final String userIdentifier;
+
+  /// The username.
+  final String username;
+
+  /// The password.
+  final String password;
+
+  /// Creates a new `ProjectConfig` instance with the given properties.
+  ProjectConfig({
+    required this.deviceId,
+    required this.userIdentifier,
+    required this.username,
+    required this.password,
+  });
+
+  /// Creates a copy of the current `ProjectConfig` instance with optional changes.
   ProjectConfig copyWith({
-    String? accountId,
-    String? appSecret,
-    String? userSecret,
-    String? keySetId,
-    String? licenseKey,
-    String? projectId,
     String? deviceId,
+    String? userIdentifier,
+    String? username,
+    String? password,
   }) {
     return ProjectConfig(
-      accountId: accountId ?? this.accountId,
-      appSecret: appSecret ?? this.appSecret,
-      userSecret: userSecret ?? this.userSecret,
-      keySetId: keySetId ?? this.keySetId,
-      licenseKey: licenseKey ?? this.licenseKey,
-      projectId: projectId ?? this.projectId,
       deviceId: deviceId ?? this.deviceId,
+      userIdentifier: userIdentifier ?? this.userIdentifier,
+      username: username ?? this.username,
+      password: password ?? this.password,
     );
   }
 
+  /// Converts the `ProjectConfig` instance to a map.
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'accountId': accountId,
-      'appSecret': appSecret,
-      'userSecret': userSecret,
-      'keySetId': keySetId,
-      'licenseKey': licenseKey,
-      'projectId': projectId,
       'deviceId': deviceId,
+      'userIdentifier': userIdentifier,
+      'username': username,
+      'password': password,
     };
   }
 
+  /// Creates a `ProjectConfig` instance from a map.
   factory ProjectConfig.fromMap(Map<String, dynamic> map) {
     return ProjectConfig(
-      accountId: map['accountId'] as String,
-      appSecret: map['appSecret'] as String,
-      userSecret: map['userSecret'] as String,
-      keySetId: map['keySetId'] as String,
-      licenseKey: map['licenseKey'] as String,
-      projectId: map['projectId'] as String,
       deviceId: map['deviceId'] as String,
+      userIdentifier: map['userIdentifier'] as String,
+      username: map['username'] as String,
+      password: map['password'] as String,
     );
   }
 
+  /// Converts the `ProjectConfig` instance to a JSON string.
   String toJson() => json.encode(toMap());
 
-  factory ProjectConfig.fromJson(String source) => ProjectConfig.fromMap(
-        json.decode(source) as Map<String, dynamic>,
-      );
+  /// Creates a `ProjectConfig` instance from a JSON string.
+  factory ProjectConfig.fromJson(String source) =>
+      ProjectConfig.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  /// Returns a string representation of the `ProjectConfig` instance.
   @override
   String toString() {
-    return 'ProjectConfig(accountId: $accountId, appSecret: $appSecret, userSecret: $userSecret, keySetId: $keySetId, licenseKey: $licenseKey, projectId: $projectId, deviceId: $deviceId)';
+    return 'ProjectConfig(deviceId: $deviceId, userIdentifier: $userIdentifier, username: $username, password: $password)';
   }
 
+  /// Compares two `ProjectConfig` instances for equality.
   @override
   bool operator ==(covariant ProjectConfig other) {
     if (identical(this, other)) return true;
 
-    return other.accountId == accountId &&
-        other.appSecret == appSecret &&
-        other.userSecret == userSecret &&
-        other.keySetId == keySetId &&
-        other.licenseKey == licenseKey &&
-        other.projectId == projectId &&
-        other.deviceId == deviceId;
+    return other.deviceId == deviceId &&
+        other.userIdentifier == userIdentifier &&
+        other.username == username &&
+        other.password == password;
   }
 
+  /// Returns the hash code of the `ProjectConfig` instance.
   @override
   int get hashCode {
-    return accountId.hashCode ^
-        appSecret.hashCode ^
-        userSecret.hashCode ^
-        keySetId.hashCode ^
-        licenseKey.hashCode ^
-        projectId.hashCode ^
-        deviceId.hashCode;
+    return deviceId.hashCode ^
+        userIdentifier.hashCode ^
+        username.hashCode ^
+        password.hashCode;
   }
 }

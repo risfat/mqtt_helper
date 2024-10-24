@@ -2,65 +2,61 @@ import 'dart:convert';
 
 import 'models.dart';
 
+/// Represents a configuration for an MQTT connection.
 class MqttConfig {
+  /// The server configuration.
   final ServerConfig serverConfig;
+
+  /// The project configuration.
   final ProjectConfig projectConfig;
+
+  /// The WebSocket configuration, optional.
   final WebSocketConfig? webSocketConfig;
-  final String userId;
-  final String? username;
-  final String? password;
+
+  /// Whether to enable logging, default is `true`.
   final bool enableLogging;
+
+  /// Whether to use a secure connection, default is `false`.
   final bool secure;
 
+  /// Creates a new `MqttConfig` instance with the given configurations and settings.
   MqttConfig({
     required this.serverConfig,
     required this.projectConfig,
     this.webSocketConfig,
-    required this.userId,
     this.enableLogging = true,
     this.secure = false,
-    String? username,
-    String? password,
-  })  : username =
-            username ?? '2${projectConfig.accountId}${projectConfig.projectId}',
-        password =
-            password ?? '${projectConfig.licenseKey}${projectConfig.keySetId}';
+  });
 
+  /// Creates a copy of the current `MqttConfig` instance with optional changes.
   MqttConfig copyWith({
     ServerConfig? serverConfig,
     ProjectConfig? projectConfig,
     WebSocketConfig? webSocketConfig,
-    String? userId,
     bool? enableLogging,
     bool? secure,
-    String? username,
-    String? password,
   }) {
     return MqttConfig(
       serverConfig: serverConfig ?? this.serverConfig,
       projectConfig: projectConfig ?? this.projectConfig,
       webSocketConfig: webSocketConfig ?? this.webSocketConfig,
-      userId: userId ?? this.userId,
       enableLogging: enableLogging ?? this.enableLogging,
       secure: secure ?? this.secure,
-      username: username ?? this.username,
-      password: password ?? this.password,
     );
   }
 
+  /// Converts the `MqttConfig` instance to a map.
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'serverConfig': serverConfig.toMap(),
       'projectConfig': projectConfig.toMap(),
       'webSocketConfig': webSocketConfig?.toMap(),
-      'userId': userId,
       'enableLogging': enableLogging,
       'secure': secure,
-      'username': username,
-      'password': password,
     };
   }
 
+  /// Creates an `MqttConfig` instance from a map.
   factory MqttConfig.fromMap(Map<String, dynamic> map) {
     return MqttConfig(
       serverConfig: ServerConfig.fromMap(
@@ -74,25 +70,26 @@ class MqttConfig {
               map['webSocketConfig'] as Map<String, dynamic>,
             )
           : null,
-      userId: map['userId'] as String,
       enableLogging: map['enableLogging'] as bool,
       secure: map['secure'] as bool,
-      username: map['username'] as String?,
-      password: map['password'] as String?,
     );
   }
 
+  /// Converts the `MqttConfig` instance to a JSON string.
   String toJson() => json.encode(toMap());
 
+  /// Creates an `MqttConfig` instance from a JSON string.
   factory MqttConfig.fromJson(String source) => MqttConfig.fromMap(
         json.decode(source) as Map<String, dynamic>,
       );
 
+  /// Returns a string representation of the `MqttConfig` instance.
   @override
   String toString() {
-    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, userId: $userId, username: $username, password: $password, enableLogging: $enableLogging, secure: $secure)';
+    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure)';
   }
 
+  /// Compares two `MqttConfig` instances for equality.
   @override
   bool operator ==(covariant MqttConfig other) {
     if (identical(this, other)) return true;
@@ -100,21 +97,16 @@ class MqttConfig {
     return other.serverConfig == serverConfig &&
         other.projectConfig == projectConfig &&
         other.webSocketConfig == webSocketConfig &&
-        other.userId == userId &&
-        other.username == username &&
-        other.password == password &&
         other.enableLogging == enableLogging &&
         other.secure == secure;
   }
 
+  /// Returns the hash code of the `MqttConfig` instance.
   @override
   int get hashCode {
     return serverConfig.hashCode ^
         projectConfig.hashCode ^
         webSocketConfig.hashCode ^
-        userId.hashCode ^
-        username.hashCode ^
-        password.hashCode ^
         enableLogging.hashCode ^
         secure.hashCode;
   }
