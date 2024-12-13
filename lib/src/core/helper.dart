@@ -252,7 +252,6 @@ class MqttHelper {
     if (_client?.getSubscriptionsStatus(topic) ==
         MqttSubscriptionStatus.active) {
       _client?.unsubscribe(topic);
-      subscribedTopics.remove(topic);
     }
   }
 
