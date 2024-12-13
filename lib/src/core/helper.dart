@@ -157,6 +157,7 @@ class MqttHelper {
     _client = _helperClient?.setup(_config);
     _client?.port = _config.serverConfig.port;
     _client?.keepAlivePeriod = 60;
+    _client?.connectTimeoutPeriod = 30000;
     _client?.onDisconnected = _onDisconnected;
     _client?.onUnsubscribed = _onUnSubscribed;
     _client?.onSubscribeFail = _onSubscribeFailed;
