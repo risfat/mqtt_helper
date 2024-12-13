@@ -42,6 +42,9 @@ class MqttController extends GetxController {
       subscribedTopicsCallback: (topics) {
         _subscripbedTopics = topics;
       },
+      unSubscribedTopicsCallback: (topics) {
+        _subscripbedTopics = topics;
+      },
     );
 
     _mqttHelper.onConnectionChange((value) {

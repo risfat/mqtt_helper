@@ -44,6 +44,11 @@ class MqttHelper {
   /// This callback function is called when the subscription to topics is successful.
   void Function(List<String>)? _subscribedTopicsCallback;
 
+  /// The callback function for unSubscribed topics.
+  ///
+  /// This callback function is called when the unSubscription to topics is successful.
+  void Function(List<String>)? _unSubscribedTopicsCallback;
+
   /// The list of subscribed topics.
   ///
   /// This list keeps track of the topics that the MQTT helper is currently subscribed to.
@@ -109,6 +114,7 @@ class MqttHelper {
     bool autoSubscribe = false,
     List<String>? topics,
     void Function(List<String>)? subscribedTopicsCallback,
+    void Function(List<String>)? unSubscribedTopicsCallback,
   }) async {
     if (autoSubscribe) {
       if (topics == null || topics.isEmpty) {
@@ -128,6 +134,7 @@ class MqttHelper {
     _topics = topics ?? [];
     _autoSubscribe = autoSubscribe;
     _subscribedTopicsCallback = subscribedTopicsCallback;
+    _unSubscribedTopicsCallback = unSubscribedTopicsCallback;
     await _initializeClient();
     await _connectClient();
   }
@@ -210,9 +217,11 @@ class MqttHelper {
         'MqttConfig is not initialized. Initialize it by calling initialize(config)',
       );
     }
-
-    _client?.subscribe(topic, MqttQos.atMostOnce);
-    subscribedTopics.add(topic);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.doesNotExist) {
+      _client?.subscribe(topic, MqttQos.atMostOnce);
+      subscribedTopics.add(topic);
+    }
   }
 
   /// Subscribes to multiple topics.
@@ -240,7 +249,11 @@ class MqttHelper {
   /// Parameters:
   ///   - `topic`: The topic to unsubscribe from.
   void unsubscribeTopic(String topic) {
-    _client?.unsubscribe(topic);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.active) {
+      _client?.unsubscribe(topic);
+      subscribedTopics.remove(topic);
+    }
   }
 
   /// Unsubscribes from multiple topics.
@@ -253,6 +266,7 @@ class MqttHelper {
     for (var topic in topics) {
       unsubscribeTopic(topic);
     }
+    _unSubscribedTopicsCallback?.call(subscribedTopics);
   }
 
   /// Disconnects the MQTT client from the MQTT broker.
