@@ -157,7 +157,9 @@ class MqttHelper {
     _client = _helperClient?.setup(_config);
 
     _client?.port = _config.serverConfig.port;
-    _client?.keepAlivePeriod = 60;
+    _client?.keepAlivePeriod = 20;
+    _client?.connectTimeoutPeriod = 30000;
+
     _client?.onDisconnected = _onDisconnected;
     _client?.onUnsubscribed = _onUnSubscribed;
     _client?.onSubscribeFail = _onSubscribeFailed;
@@ -172,8 +174,10 @@ class MqttHelper {
     _client?.onConnected = _onConnected;
     _client?.onSubscribed = _onSubscribed;
 
-    _client?.connectionMessage =
-        MqttConnectMessage().withClientIdentifier(identifier).startClean();
+    _client?.connectionMessage = MqttConnectMessage()
+        .withClientIdentifier(identifier)
+        .startClean()
+        .withWillQos(MqttQos.atMostOnce);
   }
 
   /// Connects the underlying MQTT client to the MQTT broker.
@@ -181,6 +185,9 @@ class MqttHelper {
   /// This method attempts to connect the underlying MQTT client to the MQTT broker using the provided configuration.
   Future<void> _connectClient() async {
     try {
+      if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
+        _client?.disconnect();
+      }
       var res = await _client?.connect(
         _config.projectConfig.username.isNotEmpty
             ? _config.projectConfig.username
@@ -195,6 +202,8 @@ class MqttHelper {
           subscribedTopics.clear();
           subscribeTopics(_topics);
         }
+      } else {
+        throw Exception('Failed MQTT connect: ${res?.state}');
       }
     } on NoConnectionException catch (e, st) {
       disconnect();
