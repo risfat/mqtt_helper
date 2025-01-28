@@ -59,12 +59,6 @@ class MqttHelper {
   /// If set to true, the MQTT helper will automatically subscribe to the specified topics during initialization.
   bool _autoSubscribe = false;
 
-
-   /// Whether to auto-reconnect to topics.
-  ///
-  /// If set to true, the MQTT helper will automatically reconnect to the client.
-  bool _autoReconnect = false;
-
   /// A stream controller for raw events.
   ///
   /// This stream controller is used to broadcast raw MQTT events to listeners.
@@ -118,7 +112,7 @@ class MqttHelper {
     MqttConfig config, {
     MqttCallbacks? callbacks,
     bool autoSubscribe = false,
-    bool autoReconnect = true,
+
     List<String>? topics,
     void Function(List<String>)? subscribedTopicsCallback,
     void Function(List<String>)? unSubscribedTopicsCallback,
@@ -140,7 +134,7 @@ class MqttHelper {
     _callbacks = callbacks;
     _topics = topics ?? [];
     _autoSubscribe = autoSubscribe;
-    _autoReconnect = autoReconnect;
+   
     _subscribedTopicsCallback = subscribedTopicsCallback;
     _unSubscribedTopicsCallback = unSubscribedTopicsCallback;
     await _initializeClient();
@@ -170,7 +164,7 @@ class MqttHelper {
     _client?.onUnsubscribed = _onUnSubscribed;
     _client?.onSubscribeFail = _onSubscribeFailed;
     _client?.logging(on: _config.enableLogging);
-    _client?.autoReconnect = _autoReconnect;
+    _client?.autoReconnect =  _config.autoReconnect;
     _client?.pongCallback = _pong;
     _client?.setProtocolV311();
     _client?.websocketProtocols =

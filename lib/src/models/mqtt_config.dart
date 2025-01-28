@@ -19,6 +19,9 @@ class MqttConfig {
   /// Whether to use a secure connection, default is `false`.
   final bool secure;
 
+/// Whether to use a autoreconnect connection, default is `true`.
+  final bool autoReconnect; 
+
   /// Creates a new `MqttConfig` instance with the given configurations and settings.
   MqttConfig({
     required this.serverConfig,
@@ -26,6 +29,7 @@ class MqttConfig {
     this.webSocketConfig,
     this.enableLogging = true,
     this.secure = false,
+    this.autoReconnect = true,
   });
 
   /// Creates a copy of the current `MqttConfig` instance with optional changes.

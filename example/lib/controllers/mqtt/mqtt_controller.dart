@@ -28,6 +28,7 @@ class MqttController extends GetxController {
           username: 'username',
           password: 'password',
         ),
+        
       ),
       callbacks: MqttCallbacks(
         onConnected: _onConnected,
