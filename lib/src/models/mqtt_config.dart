@@ -39,6 +39,7 @@ class MqttConfig {
     WebSocketConfig? webSocketConfig,
     bool? enableLogging,
     bool? secure,
+    bool? autoReconnect,
   }) {
     return MqttConfig(
       serverConfig: serverConfig ?? this.serverConfig,
@@ -46,6 +47,7 @@ class MqttConfig {
       webSocketConfig: webSocketConfig ?? this.webSocketConfig,
       enableLogging: enableLogging ?? this.enableLogging,
       secure: secure ?? this.secure,
+      autoReconnect: autoReconnect ?? this.autoReconnect,
     );
   }
 
@@ -57,6 +59,7 @@ class MqttConfig {
       'webSocketConfig': webSocketConfig?.toMap(),
       'enableLogging': enableLogging,
       'secure': secure,
+      'autoReconnect': autoReconnect,
     };
   }
 
@@ -76,6 +79,7 @@ class MqttConfig {
           : null,
       enableLogging: map['enableLogging'] as bool,
       secure: map['secure'] as bool,
+      autoReconnect: map['autoReconnect'] as bool,
     );
   }
 
@@ -90,7 +94,7 @@ class MqttConfig {
   /// Returns a string representation of the `MqttConfig` instance.
   @override
   String toString() {
-    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure)';
+    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure, autoReconnect: $autoReconnect)';
   }
 
   /// Compares two `MqttConfig` instances for equality.
@@ -102,6 +106,7 @@ class MqttConfig {
         other.projectConfig == projectConfig &&
         other.webSocketConfig == webSocketConfig &&
         other.enableLogging == enableLogging &&
+        other.autoReconnect == autoReconnect &&
         other.secure == secure;
   }
 
@@ -112,6 +117,7 @@ class MqttConfig {
         projectConfig.hashCode ^
         webSocketConfig.hashCode ^
         enableLogging.hashCode ^
+        autoReconnect.hashCode ^
         secure.hashCode;
   }
 }
