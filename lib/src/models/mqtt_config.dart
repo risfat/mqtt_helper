@@ -19,6 +19,9 @@ class MqttConfig {
   /// Whether to use a secure connection, default is `false`.
   final bool secure;
 
+/// Whether to use a autoreconnect connection, default is `true`.
+  final bool autoReconnect; 
+
   /// Creates a new `MqttConfig` instance with the given configurations and settings.
   MqttConfig({
     required this.serverConfig,
@@ -26,6 +29,7 @@ class MqttConfig {
     this.webSocketConfig,
     this.enableLogging = true,
     this.secure = false,
+    this.autoReconnect = true,
   });
 
   /// Creates a copy of the current `MqttConfig` instance with optional changes.
@@ -35,6 +39,7 @@ class MqttConfig {
     WebSocketConfig? webSocketConfig,
     bool? enableLogging,
     bool? secure,
+    bool? autoReconnect,
   }) {
     return MqttConfig(
       serverConfig: serverConfig ?? this.serverConfig,
@@ -42,6 +47,7 @@ class MqttConfig {
       webSocketConfig: webSocketConfig ?? this.webSocketConfig,
       enableLogging: enableLogging ?? this.enableLogging,
       secure: secure ?? this.secure,
+      autoReconnect: autoReconnect ?? this.autoReconnect,
     );
   }
 
@@ -53,6 +59,7 @@ class MqttConfig {
       'webSocketConfig': webSocketConfig?.toMap(),
       'enableLogging': enableLogging,
       'secure': secure,
+      'autoReconnect': autoReconnect,
     };
   }
 
@@ -72,6 +79,7 @@ class MqttConfig {
           : null,
       enableLogging: map['enableLogging'] as bool,
       secure: map['secure'] as bool,
+      autoReconnect: map['autoReconnect'] as bool,
     );
   }
 
@@ -86,7 +94,7 @@ class MqttConfig {
   /// Returns a string representation of the `MqttConfig` instance.
   @override
   String toString() {
-    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure)';
+    return 'MqttConfig(serverConfig: $serverConfig, projectConfig: $projectConfig, webSocketConfig: $webSocketConfig, enableLogging: $enableLogging, secure: $secure, autoReconnect: $autoReconnect)';
   }
 
   /// Compares two `MqttConfig` instances for equality.
@@ -98,6 +106,7 @@ class MqttConfig {
         other.projectConfig == projectConfig &&
         other.webSocketConfig == webSocketConfig &&
         other.enableLogging == enableLogging &&
+        other.autoReconnect == autoReconnect &&
         other.secure == secure;
   }
 
@@ -108,6 +117,7 @@ class MqttConfig {
         projectConfig.hashCode ^
         webSocketConfig.hashCode ^
         enableLogging.hashCode ^
+        autoReconnect.hashCode ^
         secure.hashCode;
   }
 }

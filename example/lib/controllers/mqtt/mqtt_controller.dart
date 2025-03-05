@@ -28,6 +28,7 @@ class MqttController extends GetxController {
           username: 'username',
           password: 'password',
         ),
+        
       ),
       callbacks: MqttCallbacks(
         onConnected: _onConnected,
@@ -40,6 +41,9 @@ class MqttController extends GetxController {
       autoSubscribe: true,
       topics: _topics,
       subscribedTopicsCallback: (topics) {
+        _subscripbedTopics = topics;
+      },
+      unSubscribedTopicsCallback: (topics) {
         _subscripbedTopics = topics;
       },
     );

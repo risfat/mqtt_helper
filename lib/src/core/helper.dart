@@ -44,6 +44,11 @@ class MqttHelper {
   /// This callback function is called when the subscription to topics is successful.
   void Function(List<String>)? _subscribedTopicsCallback;
 
+  /// The callback function for unSubscribed topics.
+  ///
+  /// This callback function is called when the unSubscription to topics is successful.
+  void Function(List<String>)? _unSubscribedTopicsCallback;
+
   /// The list of subscribed topics.
   ///
   /// This list keeps track of the topics that the MQTT helper is currently subscribed to.
@@ -107,8 +112,10 @@ class MqttHelper {
     MqttConfig config, {
     MqttCallbacks? callbacks,
     bool autoSubscribe = false,
+
     List<String>? topics,
     void Function(List<String>)? subscribedTopicsCallback,
+    void Function(List<String>)? unSubscribedTopicsCallback,
   }) async {
     if (autoSubscribe) {
       if (topics == null || topics.isEmpty) {
@@ -127,7 +134,9 @@ class MqttHelper {
     _callbacks = callbacks;
     _topics = topics ?? [];
     _autoSubscribe = autoSubscribe;
+   
     _subscribedTopicsCallback = subscribedTopicsCallback;
+    _unSubscribedTopicsCallback = unSubscribedTopicsCallback;
     await _initializeClient();
     await _connectClient();
   }
@@ -148,14 +157,14 @@ class MqttHelper {
     var identifier = '$userIdentifier$deviceId';
 
     _client = _helperClient?.setup(_config);
-
     _client?.port = _config.serverConfig.port;
     _client?.keepAlivePeriod = 60;
+    _client?.connectTimeoutPeriod = 30000;
     _client?.onDisconnected = _onDisconnected;
     _client?.onUnsubscribed = _onUnSubscribed;
     _client?.onSubscribeFail = _onSubscribeFailed;
     _client?.logging(on: _config.enableLogging);
-    _client?.autoReconnect = true;
+    _client?.autoReconnect =  _config.autoReconnect;
     _client?.pongCallback = _pong;
     _client?.setProtocolV311();
     _client?.websocketProtocols =
@@ -174,6 +183,9 @@ class MqttHelper {
   /// This method attempts to connect the underlying MQTT client to the MQTT broker using the provided configuration.
   Future<void> _connectClient() async {
     try {
+      if (_client?.connectionStatus?.state == MqttConnectionState.connected) {
+        _client?.disconnect();
+      }
       var res = await _client?.connect(
         _config.projectConfig.username.isNotEmpty
             ? _config.projectConfig.username
@@ -188,6 +200,8 @@ class MqttHelper {
           subscribedTopics.clear();
           subscribeTopics(_topics);
         }
+      } else {
+        throw Exception('Failed MQTT connect: ${res?.state}');
       }
     } on NoConnectionException catch (e, st) {
       disconnect();
@@ -210,9 +224,11 @@ class MqttHelper {
         'MqttConfig is not initialized. Initialize it by calling initialize(config)',
       );
     }
-
-    _client?.subscribe(topic, MqttQos.atMostOnce);
-    subscribedTopics.add(topic);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.doesNotExist) {
+      _client?.subscribe(topic, MqttQos.atMostOnce);
+      subscribedTopics.add(topic);
+    }
   }
 
   /// Subscribes to multiple topics.
@@ -240,7 +256,10 @@ class MqttHelper {
   /// Parameters:
   ///   - `topic`: The topic to unsubscribe from.
   void unsubscribeTopic(String topic) {
-    _client?.unsubscribe(topic);
+    if (_client?.getSubscriptionsStatus(topic) ==
+        MqttSubscriptionStatus.active) {
+      _client?.unsubscribe(topic);
+    }
   }
 
   /// Unsubscribes from multiple topics.
@@ -253,6 +272,7 @@ class MqttHelper {
     for (var topic in topics) {
       unsubscribeTopic(topic);
     }
+    _unSubscribedTopicsCallback?.call(subscribedTopics);
   }
 
   /// Disconnects the MQTT client from the MQTT broker.
