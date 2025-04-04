@@ -1,3 +1,8 @@
+## 1.0.2
+
+- Added unsubscribe topics callback
+- Added `autoReconnect` configuration
+
 ## 1.0.1
 
 - Disconnect client on connection error from broker
