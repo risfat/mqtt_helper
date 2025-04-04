@@ -8,8 +8,7 @@ class HomeView extends StatelessWidget {
   static const String route = '/home';
 
   @override
-  Widget build(BuildContext context) =>
-      GetBuilder<HomeController>(builder: (controller) {
+  Widget build(BuildContext context) => GetBuilder<HomeController>(builder: (controller) {
         return Scaffold(
           appBar: AppBar(
             title: const Text(AppConstants.appName),
@@ -45,7 +44,7 @@ class HomeView extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Dimens.ten),
-          color: ColorsValue.primaryColorLight.withOpacity(.4),
+          color: ColorsValue.primaryColorLight.withValues(alpha: 0.4),
         ),
         child: TextButton(
           onPressed: RouteManagement.goToAddBroker,

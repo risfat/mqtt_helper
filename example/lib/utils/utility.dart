@@ -17,9 +17,7 @@ class Utility {
   /// Returns true if the internet connection is available.
   static Future<bool> get isNetworkAvailable async {
     final result = await Connectivity().checkConnectivity();
-    return result.contains(ConnectivityResult.mobile) ||
-        result.contains(ConnectivityResult.wifi) ||
-        result.contains(ConnectivityResult.ethernet);
+    return result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi) || result.contains(ConnectivityResult.ethernet);
   }
 
   static Future<T?> openBottomSheet<T>(
@@ -30,7 +28,7 @@ class Utility {
   }) async =>
       await Get.bottomSheet<T>(
         child,
-        barrierColor: Colors.black.withOpacity(0.7),
+        barrierColor: Colors.black.withValues(alpha: 0.7),
         backgroundColor: backgroundColor,
         isDismissible: isDismissible,
         shape: shape,
@@ -161,9 +159,6 @@ class Utility {
       case MessageType.success:
         backgroundColor = Colors.green;
         break;
-      default:
-        backgroundColor = Colors.black;
-        break;
     }
     Future.delayed(
       const Duration(seconds: 0),
@@ -200,8 +195,7 @@ class Utility {
 
   static void updateLater(VoidCallback callback, [bool addDelay = true]) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(
-          addDelay ? const Duration(milliseconds: 10) : Duration.zero, () {
+      Future.delayed(addDelay ? const Duration(milliseconds: 10) : Duration.zero, () {
         callback();
       });
     });

@@ -11,7 +11,7 @@ class BrokerCard extends StatelessWidget {
     return SizedBox(
       width: Dimens.percentWidth(1),
       child: Card(
-        color: ColorsValue.primaryColorDark.withOpacity(.5),
+        color: ColorsValue.primaryColorDark.withValues(alpha: 0.5),
         child: Padding(
           padding: Dimens.edgeInsets10,
           child: Column(

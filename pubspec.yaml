@@ -12,12 +12,12 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  mqtt_client: ^10.5.1
+  mqtt_client: ^10.8.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 platforms:
   android:
