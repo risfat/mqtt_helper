@@ -330,9 +330,8 @@ class MqttHelper {
       final recMess = c?.first.payload as MqttPublishMessage;
       final topic = c?.first.topic;
 
-      var payload = jsonDecode(
-        MqttPublishPayload.bytesToStringAsString(recMess.payload.message),
-      ) as Map<String, dynamic>;
+      var payload = 
+        MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
 
       _eventStream.add(
         EventModel(

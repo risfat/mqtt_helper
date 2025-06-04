@@ -8,7 +8,7 @@ class EventModel {
   final String topic;
 
   /// The payload of the event, represented as a map of strings to dynamic values.
-  final Map<String, dynamic> payload;
+  final dynamic payload;
 
   /// Creates a new [EventModel] instance with the given topic and payload.
   EventModel({
@@ -19,7 +19,7 @@ class EventModel {
   /// Creates a copy of the current [EventModel] instance with optional changes.
   EventModel copyWith({
     String? topic,
-    Map<String, dynamic>? payload,
+    dynamic payload,
   }) {
     return EventModel(
       topic: topic ?? this.topic,
@@ -39,7 +39,7 @@ class EventModel {
   factory EventModel.fromMap(Map<String, dynamic> map) {
     return EventModel(
       topic: map['topic'] as String,
-      payload: (map['payload'] as Map<String, dynamic>),
+      payload: map['payload']
     );
   }
 
